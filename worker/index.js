@@ -4,22 +4,22 @@ import { handleCors, handleCorsOptions } from "./cors";
 
 const router = Router();
 
-router.get("/", () => {
+router.get("/", (request) => {
     return new Response(JSON.stringify({
         message: "hello, world!"
     }), {
         headers: {
-            ...handleCors(),
+            ...handleCors(request),
             'Content-Type': 'application/json',
         }
     })
 })
 
-router.get("/messages", async () => {
+router.get("/messages", async (request) => {
     const messages = JSON.parse(await FORUM_DB.get("messages")) || [];
     return new Response(JSON.stringify({ messages }), {
         headers: {
-            ...handleCors(),
+            ...handleCors(request),
             'Content-Type': 'application/json',
         },
     });
@@ -38,12 +38,12 @@ const newMessageHandler = async (request) => {
         await FORUM_DB.put("messages", JSON.stringify([{ id: uuid(), message, timestamp }, ...messages]));
     }
     return new Response(null, {
-        headers: handleCors(),
+        headers: handleCors(request),
     });
 };
 router.post("/messages", newMessageHandler);
 
-router.options("*", handleCorsOptions);
+router.options("*", handleCorsOptions());
 router.all("*", () => new Response("404, not found!", { status: 404 }))
 
 addEventListener('fetch', (e) => {

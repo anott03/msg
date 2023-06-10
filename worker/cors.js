@@ -5,6 +5,7 @@ const allowedOrigins = ["http://localhost:3000", "https://localhost:3000", "http
 * @type {(origin: string) => string}
 */
 const validateOrigin = (origin) => {
+    if (!origin) return "";
     if (allowedOrigins.includes(origin)) {
         return origin;
     }
@@ -31,6 +32,6 @@ export const handleCors = (request) => {
 * @type {(options?: {}) => (request: Request) => Response}
 */
 export const handleCorsOptions = (options = {}) => request => {
-    const headers = handleCors();
+    const headers = handleCors(request);
     return new Response(null, { headers });
 }
