@@ -19,7 +19,7 @@ function User() {
 }
 
 export default async function Home() {
-    const { messages } = await fetch("http://localhost:8787/messages").then(res => res.json());
+    const { messages } = await fetch(`${process.env.API_URL}/messages`).then(res => res.json());
 
     return (
         <main className="w-screen h-screen flex flex-row justify-center items-center">
@@ -30,7 +30,7 @@ export default async function Home() {
                         "use server";
                         const message = formData.get("inpt");
                         const timestamp = Date.now();
-                        await fetch("http://localhost:8787/messages", {
+                        await fetch(`${process.env.API_URL}/messages`, {
                             method: "POST",
                             body: JSON.stringify({ message, timestamp }),
                             headers: {
