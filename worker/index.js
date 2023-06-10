@@ -29,13 +29,19 @@ router.get("/messages", async (request) => {
 * @type {(request: Request) => Response}
 */
 const newMessageHandler = async (request) => {
-    const { message, timestamp } = await request.json();
+    /**
+    * @type {{message: string, timestamp: number}}
+    */
+    let { message, timestamp } = await request.json();
     if (message) {
-        /**
-        * @type {{id: string, message: string, timestamp: number}[]}
-        */
-        const messages = JSON.parse(await FORUM_DB.get("messages")) || [];
-        await FORUM_DB.put("messages", JSON.stringify([{ id: uuid(), message, timestamp }, ...messages]));
+        message = message.trim();
+        if (message !== "") {
+            /**
+            * @type {{id: string, message: string, timestamp: number}[]}
+            */
+            const messages = JSON.parse(await FORUM_DB.get("messages")) || [];
+            await FORUM_DB.put("messages", JSON.stringify([{ id: uuid(), message, timestamp }, ...messages]));
+        }
     }
     return new Response(null, {
         headers: handleCors(request),

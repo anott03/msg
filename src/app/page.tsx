@@ -28,7 +28,10 @@ export default async function Home() {
                     <h1 className="text-xl font-bold">Little Message Thing</h1>
                     <form className="flex flex-col items-end" action={async (formData: FormData) => {
                         "use server";
-                        const message = formData.get("inpt");
+                        let message = formData.get("inpt")?.toString();
+                        if (!message) return;
+                        message = message.trim()
+                        if (message === "") return;
                         const timestamp = Date.now();
                         await fetch(`${process.env.API_URL}/messages`, {
                             method: "POST",
